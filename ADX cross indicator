@@ -1,0 +1,18 @@
+study(“ADX Cross Indicator”)
+
+length = input(14, title=”DI Length”)
+smoothing = input(14, title=”ADX Smoothing”)
+lag = input(1, title=”Lag”)
+
+up = change(high)
+down = -change(low)
+trueRange = rma(tr, length)
+
+plus = fixnan(100 * rma(up > down and up > 0 ? up : 0, length) / trueRange)
+minus = fixnan(100 * rma(down > up and down > 0 ? down : 0, length) / trueRange)
+
+sum = plus + minus 
+adx = 100 * rma(abs(plus — minus) / (sum == 0 ? 1 : sum), smoothing)
+
+plot(adx, color=blue, title=”ADX”, style=line)
+plot(adx[lag], color=red, title=”ADX”, style=line)
